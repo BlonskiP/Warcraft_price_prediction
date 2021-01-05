@@ -12,7 +12,7 @@ REQUEST_CURRENT_PRICE = "https://wowtokenprices.com/current_prices.json"
 MONGO_URI = 'mongodb://root:passwd@mongodb:27017'
 DB_NAME = "Token_prices"
 COLLECTION = "Tokens_history"
-NEW_PRICES_PERIOD = 300
+NEW_PRICES_PERIOD = 5
 
 
 @app.on_after_configure.connect
@@ -31,7 +31,8 @@ def post_to_mongo(data):
     db = mongo_client.Token_prices
     collection = db[COLLECTION]
     find_q =  { 'time_of_last_change_utc_timezone': data['time_of_last_change_utc_timezone'] }
-    find = list(collection.find({},find_q))
+    find = list(collection.find(find_q))
+    print('find',find,len(find))
     if not find:
     	result = collection.insert_one(data)
     mongo_client.close()
